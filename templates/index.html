@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Recognition System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div class="page">
+
+    <nav class="navbar">
+      <div class="logo">AI Recognition</div>
+      <div class="nav-links">
+        <a href="#input">Input</a>
+        <a href="#preview">Preview</a>
+        <a href="#result">Result</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">Offline AI Recognition Platform</span>
+
+        <h1>Handwriting & Signature Recognition</h1>
+
+        <p class="hero-text">
+          Upload or draw handwritten digits, letters, and signatures. The system
+          uses AI models to predict the result, confidence score, and analysis.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#input" class="primary-link">Start Prediction</a>
+          <span class="small-note">Digits • Letters • Signatures</span>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <h3>System Overview</h3>
+
+        <div class="mini-row">
+          <span>Digit Recognition</span>
+          <strong>0 - 9</strong>
+        </div>
+
+        <div class="mini-row">
+          <span>Letter Recognition</span>
+          <strong>A - Z</strong>
+        </div>
+
+        <div class="mini-row">
+          <span>Signature Check</span>
+          <strong>Match / Forged</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-section">
+            <div class="stat-card">
+        <h2>500K+</h2>
+        <p>Training Images</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>38</h2>
+        <p>Total Classes</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>3</h2>
+        <p>AI Models</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>4</h2>
+        <p>Recognition Modes</p>
+      </div>
+    </section>
+
+    <main class="main-grid">
+
+      <!-- Input Panel -->
+      <section class="card input-card" id="input">
+        <div class="card-header">
+          <span class="card-icon">01</span>
+          <div>
+            <h2>Input Panel</h2>
+            <p class="section-text">Choose the recognition task and upload or draw input.</p>
+          </div>
+        </div>
+
+        <div class="task-tabs">
+          <button class="tab-btn active" data-task="digit">Digit</button>
+          <button class="tab-btn" data-task="letter">Letter</button>
+          <button class="tab-btn" data-task="signature">Signature</button>
+        </div>
+
+        <input type="hidden" id="taskSelect" value="digit">
+
+        <div id="singleInputWrapper">
+          <label for="imageInput" class="upload-label">Choose Image</label>
+          <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <div id="signatureInputs" style="display: none;">
+          <label for="referenceImage" class="upload-label">Reference Signature Image</label>
+          <input type="file" id="referenceImage" accept="image/*">
+
+          <label for="testImage" class="upload-label">Test Signature Image</label>
+          <input type="file" id="testImage" accept="image/*">
+        </div>
+
+        <div class="actions">
+          <button id="predictBtn" class="primary-btn" type="button">Predict</button>
+          <button id="resetBtn" class="secondary-btn" type="button">Reset</button>
+        </div>
+
+        <div class="status-box" id="statusBox">Ready to test.</div>
+      </section>
+
+      <!-- Preview Panel -->
+      <section class="card preview-card" id="preview">
+        <div class="card-header">
+          <span class="card-icon">02</span>
+          <div>
+            <h2>Image Preview</h2>
+            <p class="section-text">Preview uploaded images or draw directly.</p>
+          </div>
+        </div>
+
+        <div class="preview-wrapper">
+
+          <div id="singlePreviewBox">
+            <img id="previewImage" alt="Preview">
+
+            <canvas id="drawCanvas" width="280" height="280"></canvas>
+
+            <div id="previewPlaceholder" class="preview-placeholder">
+              Draw here or upload image
+            </div>
+
+            <button id="clearCanvasBtn" class="secondary-btn" type="button">
+              Clear Drawing
+            </button>
+          </div>
+
+          <div id="comparePreviewBox" style="display: none;">
+            <div class="signature-preview-stack">
+
+              <div class="signature-preview-item">
+                <p class="compare-title">Reference Signature</p>
+
+                <div class="signature-draw-preview">
+                  <img id="referencePreview" class="compare-preview-image" alt="Reference Preview">
+                  <canvas id="referenceCanvas" width="280" height="160"></canvas>
+
+                  <div id="referencePlaceholder" class="preview-placeholder">
+                    Draw reference signature or upload image
+                  </div>
+                </div>
+
+                <button id="clearReferenceCanvasBtn" type="button" class="secondary-btn">
+                  Clear Reference
+                </button>
+              </div>
+
+              <div class="signature-preview-item">
+                <p class="compare-title">Test Signature</p>
+
+                <div class="signature-draw-preview">
+                  <img id="testPreview" class="compare-preview-image" alt="Test Preview">
+                  <canvas id="testCanvas" width="280" height="160"></canvas>
+
+                  <div id="testPlaceholder" class="preview-placeholder">
+                    Draw test signature or upload image
+                  </div>
+                </div>
+
+                <button id="clearTestCanvasBtn" type="button" class="secondary-btn">
+                  Clear Test
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Result Panel -->
+      <section class="card result-card" id="result">
+        <div class="card-header">
+          <span class="card-icon">03</span>
+          <div>
+            <h2>Prediction Result</h2>
+            <p class="section-text">Prediction, confidence, and explanation appear here.</p>
+          </div>
+        </div>
+
+        <div class="result-main" id="resultText">No result yet.</div>
+
+        <div class="confidence-box">
+          <div class="confidence-top">
+            <span class="confidence-label">Confidence</span>
+            <span class="confidence-value" id="confidenceText">--</span>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="confidenceBar"></div>
+          </div>
+        </div>
+
+        <div class="analysis-box">
+          <h3>AI Analysis</h3>
+          <p id="analysisText">Upload an image or draw, then press predict.</p>
+          <img id="diffImage" alt="Difference Visualization">
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
