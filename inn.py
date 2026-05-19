@@ -37,9 +37,9 @@ letter_model = tf.keras.models.load_model(
     os.path.join(MODELS_DIR, "letters_model.keras")
 )
 
-signature_encoder = tf.keras.models.load_model(
-    os.path.join(MODELS_DIR, "signature_encoder.keras")
-)
+#signature_encoder = tf.keras.models.load_model(
+#    os.path.join(MODELS_DIR, "signature_encoder.keras")
+#)
 
 letters = string.ascii_uppercase
 
@@ -190,6 +190,8 @@ def predict_letter():
 
 @app.route("/compare-signatures", methods=["POST"])
 def compare_signatures():
+    import gc
+
     ref_img, error_response, status_code = read_uploaded_image("reference_image")
     if error_response:
         return error_response, status_code
@@ -200,6 +202,11 @@ def compare_signatures():
 
     ref_processed = preprocess_signature(ref_img)
     test_processed = preprocess_signature(test_img)
+
+    signature_encoder = tf.keras.models.load_model(
+        os.path.join(MODELS_DIR, "signature_encoder.keras"),
+        compile=False
+    )
 
     ref_emb = signature_encoder.predict(ref_processed, verbose=0)
     test_emb = signature_encoder.predict(test_processed, verbose=0)
@@ -228,6 +235,9 @@ def compare_signatures():
 
     _, buffer = cv2.imencode(".png", diff_img)
     encoded_image = base64.b64encode(buffer).decode("utf-8")
+
+    del signature_encoder
+    gc.collect()
 
     return jsonify({
         "prediction": result,
